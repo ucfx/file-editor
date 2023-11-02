@@ -36,6 +36,7 @@ app.whenReady().then(() => {
     ipcMain.on("delete-all-file-selected", deleteAllFileSelected);
     ipcMain.handle("check-is-file", checkIsFile);
     ipcMain.on("organize-files-by-starting-char", organizeFilesByStartingChar);
+    ipcMain.on("organize-files-by-extension", organizeFilesByExtension);
 });
 
 const closeMe = () => {
@@ -144,6 +145,42 @@ function organizeFilesByStartingChar(event, directoryPath) {
             console.log(`Moved ${file} to ${path.join(newDirectory, file)}`);
         } else if (fs.lstatSync(filePath).isDirectory()) {
             organizeFilesByStartingChar(event, filePath);
+        }
+    }
+
+    event.sender.send("selected-dir", {
+        path: directoryPath,
+        ...readDir(directoryPath),
+    });
+}
+
+function organizeFilesByExtension(event, directoryPath) {
+    if (
+        !fs.existsSync(directoryPath) ||
+        !fs.lstatSync(directoryPath).isDirectory()
+    ) {
+        console.log(`Directory "${directoryPath}" does not exist.`);
+        return;
+    }
+
+    const files = fs.readdirSync(directoryPath);
+
+    for (const file of files) {
+        const filePath = path.join(directoryPath, file);
+        const isFile = fs.lstatSync(filePath).isFile();
+        const extension = path.extname(file).toLowerCase();
+
+        if (isFile) {
+            const newDirectory = path.join(directoryPath, extension);
+
+            if (!fs.existsSync(newDirectory)) {
+                fs.mkdirSync(newDirectory);
+            }
+
+            fs.renameSync(filePath, path.join(newDirectory, file));
+            console.log(`Moved ${file} to ${path.join(newDirectory, file)}`);
+        } else if (fs.lstatSync(filePath).isDirectory()) {
+            organizeFilesByExtension(event, filePath);
         }
     }
 
