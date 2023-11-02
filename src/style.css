@@ -1,0 +1,302 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&family=Righteous&display=swap"); */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* user-select: none; */
+    font-family: "Tajawal", sans-serif;
+}
+
+:root {
+    --primary: #4a5176;
+    --secondary: #121214;
+    --tertiary: #3b405a;
+    --quaternary: #bbbbcc;
+    --quinary: #121214;
+    --senary: #fff;
+    --danger: #ff4e4e;
+    --success: #616fb4;
+    --success-dark: #4a5176;
+}
+
+body {
+    background-color: var(--secondary);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 20px;
+    text-align: center;
+}
+
+.navigation {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 28px;
+    background: var(--tertiary);
+    font-size: 16px;
+    color: #bbbbcc;
+    z-index: 555555;
+}
+
+.navigation .title {
+    width: calc(100% - 100px);
+    text-align: left;
+    height: 100%;
+    padding: 3px 5px 5px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    -webkit-app-region: drag;
+}
+
+.navigation .btns {
+    width: 100px;
+    height: 100%;
+    display: flex;
+}
+
+.navigation .btns i {
+    padding: 5px;
+    width: 50%;
+    height: 100%;
+    display: grid;
+    cursor: pointer;
+    font-weight: bold;
+    place-items: center;
+    border-left: 0.5px solid #2f2f36;
+    transition: 0.2s;
+}
+
+.navigation .btns i:hover {
+    background: var(--danger);
+    color: #121214;
+}
+
+.navigation .btns i:nth-child(1):hover {
+    background: #8484aa;
+    color: #121214;
+}
+
+.btn {
+    background: var(--success);
+    color: #fff;
+    padding: 5px 20px;
+    border-radius: 3px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn.danger {
+    background: var(--danger);
+}
+
+.btn:hover {
+    background: var(--success-dark);
+}
+
+.container {
+    height: calc(100vh - 28px);
+}
+
+.container .folder-dir {
+    display: none;
+}
+
+
+.container.selected .select-dir {
+    display: none;
+}
+
+.container.selected .folder-dir {
+    display: block;
+}
+
+.container .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 115px;
+    padding: 10px;
+    background: #292b38;
+}
+
+.container .bottom {
+    height: calc(100vh - 143px);
+}
+
+.container .bottom .search {
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 500;
+    background: var(--quinary);
+    visibility: hidden;
+    opacity: 0;
+}
+
+.container .bottom .search input {
+    padding: 0 10px;
+    height: 35px;
+    width: 300px;
+    border: 2px solid var(--tertiary);
+    background: none;
+    outline: none;
+    color: var(--senary);
+    font-size: 16px;
+    border-radius: 5px;
+    transition: 0.1s;
+}
+
+.container .bottom .search input:focus {
+    border-color: var(--success)
+}
+
+.directory-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.directory-container::-webkit-scrollbar-track {
+    background: #121214;
+}
+
+.directory-container::-webkit-scrollbar-thumb {
+    background: #3b405a;
+}
+
+.directory-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100% - 115px);
+    font-size: 15px;
+    background: #292b38;
+}
+
+.directory-container ul>li>ul {
+    display: none;
+}
+
+.directory-container.onsearch ul>li>ul {
+    display: block;
+}
+
+.directory-container ul {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    text-align: left;
+    list-style: none;
+}
+
+.directory-container .dropdown {
+    border-bottom: 1px solid #ccc;
+}
+
+.directory-container ul li input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #cad4ff;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-right: 15px;
+    position: relative;
+    top: 3px;
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.directory-container ul li:hover>input[type="checkbox"],
+.directory-container ul li input[type="checkbox"]:checked {
+    opacity: 1;
+}
+
+
+.directory-container ul li input[type="checkbox"]:checked {
+    background: #81ff85;
+    border-color: #81ff85;
+}
+
+.directory-container ul li span.dropdown {
+    cursor: pointer;
+}
+
+.directory-container ul li {
+    width: calc(100%);
+    padding: 5px;
+    margin: 0 30px;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.directory-container .fa-light {
+    margin-right: 5px;
+}
+
+.bottom .buttons {
+    /* background: #292b38; */
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s;
+    visibility: hidden;
+    opacity: 0;
+}
+
+.container.selected .bottom .buttons,
+.container.selected .bottom .search {
+    visibility: visible;
+    opacity: 1;
+}
+
+.container .prompt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    z-index: -1;
+    opacity: 0;
+    transition: 0.2s;
+
+    &.show {
+        opacity: 1;
+        z-index: 99999999999;
+
+    }
+
+    .message {
+        border: 2px solid var(--tertiary);
+        padding: 15px;
+        border-radius: 5px;
+        background: #292b38;
+
+        .text {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--senary);
+            margin-bottom: 15px;
+        }
+    }
+}
