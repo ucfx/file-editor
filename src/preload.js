@@ -247,10 +247,13 @@ window.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".dropdown").forEach((item) => {
             item.addEventListener("click", (event) => {
                 const ul = event.target.nextSibling;
+                const i = event.target.previousSibling;
                 ul.style.display =
                     ul.style.display === "none" || ul.style.display === ""
                         ? "block"
                         : "none";
+                        i.classList.toggle("fa-folder-open");
+
             });
         });
     }

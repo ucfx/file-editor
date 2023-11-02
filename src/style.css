@@ -203,6 +203,12 @@ body {
     border-bottom: 1px solid #ccc;
 }
 
+.directory-container li span {
+    /* background: red; */
+    display: inline-block;
+    padding-left: 30px;
+}
+
 .directory-container.dublicate>ul>li>span {
     background-color: red;
     display: inline-block;
@@ -264,7 +270,7 @@ input[type="checkbox"] {
 }
 
 .directory-container .fa-light {
-    margin-right: 5px;
+    margin-right: -20px;
 }
 
 .bottom .buttons {
