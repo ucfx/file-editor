@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^27.0.2"
+    "electron": "^27.0.2",
+    "fs-extra": "^11.1.1"
   }
 }
