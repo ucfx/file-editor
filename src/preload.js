@@ -21,12 +21,20 @@ window.addEventListener("DOMContentLoaded", () => {
     const btnOrganize = document.getElementById("btn-organize-filename");
     const btnExtension = document.getElementById("btn-organize-extension");
 
-    btnOrganize.addEventListener("click", (event) => {
-        ipcRenderer.send("organize-files-by-starting-char", dirPath);
+    btnOrganize.addEventListener("change", (event) => {
+        if (btnOrganize.checked) {
+            ipcRenderer.send("organize-files-by-starting-char", dirPath);
+        } else {
+            ipcRenderer.send("undo-organize-files-by-starting-char", dirPath);
+        }
     });
 
-    btnExtension.addEventListener("click", (event) => {
-        ipcRenderer.send("organize-files-by-extension", dirPath);
+    btnExtension.addEventListener("change", (event) => {
+        if (btnExtension.checked) {
+            ipcRenderer.send("organize-files-by-extension", dirPath);
+        } else {
+            ipcRenderer.send("undo-organize-files-by-extension", dirPath);
+        }
     });
 
     btnConfirm.addEventListener("click", (event) => {

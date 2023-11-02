@@ -37,6 +37,15 @@ app.whenReady().then(() => {
     ipcMain.handle("check-is-file", checkIsFile);
     ipcMain.on("organize-files-by-starting-char", organizeFilesByStartingChar);
     ipcMain.on("organize-files-by-extension", organizeFilesByExtension);
+
+    ipcMain.on(
+        "undo-organize-files-by-starting-char",
+        undoOrganizeFilesByStartingChar
+    );
+    ipcMain.on(
+        "undo-organize-files-by-extension",
+        undoOrganizeFilesByExtension
+    );
 });
 
 const closeMe = () => {
@@ -154,6 +163,8 @@ function organizeFilesByStartingChar(event, directoryPath) {
     });
 }
 
+function undoOrganizeFilesByStartingChar(event, directoryPath) {}
+
 function organizeFilesByExtension(event, directoryPath) {
     if (
         !fs.existsSync(directoryPath) ||
@@ -189,3 +200,5 @@ function organizeFilesByExtension(event, directoryPath) {
         ...readDir(directoryPath),
     });
 }
+
+function undoOrganizeFilesByExtension(event, directoryPath) {}
