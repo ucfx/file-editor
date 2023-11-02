@@ -1,59 +1,61 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			http-equiv="Content-Security-Policy"
+			content="default-src 'self'; script-src 'self'"
+		/>
+		<title>File Editor</title>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title>File Editor</title>
+		<link rel="stylesheet" href="src/style.css" />
+		<link rel="stylesheet" href="public/assets/fontawesome/css/all.css" />
+	</head>
 
-    <link rel="stylesheet" href="src/style.css">
-    <link rel="stylesheet" href="public/assets/fontawesome/css/all.css">
-</head>
+	<body>
+		<div class="navigation">
+			<div class="title">
+				<span>File Editor</span>
+			</div>
+			<div class="btns">
+				<i class="fa-light fa-minus" id="btn-min"></i>
+				<i class="fa-light fa-xmark" id="btn-close"></i>
+			</div>
+		</div>
+		<div class="container">
+			<div class="prompt">
+				<div class="message">
+					<div class="text">Are you sure to delete fiels?</div>
+					<div class="btns">
+						<button id="btn-confirm" class="btn danger">Delete</button>
+						<button id="btn-cancel" class="btn">Cancel</button>
+					</div>
+				</div>
+			</div>
+			<div class="top">
+				<div class="select-dir">
+					<p>Choose a directory to start</p>
+					<button class="btn f" id="btn-choose-dir">Choose Dir</button>
+				</div>
+				<div class="folder-dir">
+					<p id="selected-dir"></p>
+					<button class="btn danger" id="btn-close-folder">Close</button>
+				</div>
+			</div>
+			<div class="bottom">
+				<div class="search">
+					<input type="text" id="search-input" placeholder="Search" />
+				</div>
 
-<body>
-    <div class="navigation">
-        <div class="title">
-            <span>File Editor</span>
-        </div>
-        <div class="btns">
-            <i class="fa-light fa-minus" id="btn-min"></i>
-            <i class="fa-light fa-xmark" id="btn-close"></i>
-        </div>
-    </div>
-    <div class="container">
-        <div class="prompt">
-            <div class="message">
-                <div class="text">Are you sure to delete fiels?</div>
-                <div class="btns">
-                    <button id="btn-confirm" class="btn danger">Delete</button>
-                    <button id="btn-cancel" class="btn">Cancel</button>
-                </div>
-            </div>
-        </div>
-        <div class="top">
-            <div class="select-dir">
-                <p>Choose a directory to start</p>
-                <button class="btn f" id="btn-choose-dir">Choose Dir</button>
-            </div>
-            <div class="folder-dir">
-                <p id="selected-dir"></p>
-                <button class="btn danger" id="btn-close-folder">Close</button>
-            </div>
+				<div class="buttons">
+					<button class="btn danger" id="btn-delete-all-file-selected">
+						Delete All Selected File
+					</button>
+					<button class="btn" id="btn-organize">Organize by filename</button>
+				</div>
 
-        </div>
-        <div class="bottom">
-            <div class="search">
-                <input type="text" id="search-input" placeholder="Search">
-            </div>
-
-            <div class="buttons">
-                <button class="btn danger" id="btn-delete-all-file-selected">Delete All Selected File</button>
-            </div>
-
-            <div class="directory-container" id="directory-container"></div>
-        </div>
-
-    </div>
-</body>
-
+				<div class="directory-container" id="directory-container"></div>
+			</div>
+		</div>
+	</body>
 </html>

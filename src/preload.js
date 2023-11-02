@@ -1,228 +1,225 @@
 let directoryData = null;
 let dirPath = null;
 window.addEventListener("DOMContentLoaded", () => {
-    const { ipcRenderer } = require("electron");
-    const btnClose = document.getElementById("btn-close");
-    const btnCloseFolder = document.getElementById("btn-close-folder");
-    const btnMin = document.getElementById("btn-min");
-    const btnChooseDir = document.getElementById("btn-choose-dir");
-    const conatainer = document.getElementsByClassName("container");
-    const directoryContainer = document.getElementById("directory-container");
-    const searchInput = document.getElementById("search-input");
-    const btnDeleteAllFileSelected = document.getElementById(
-        "btn-delete-all-file-selected"
-    );
-    const btnConfirm = document.getElementById("btn-confirm");
-    const btnCancel = document.getElementById("btn-cancel");
+	const { ipcRenderer } = require("electron");
+	const btnClose = document.getElementById("btn-close");
+	const btnCloseFolder = document.getElementById("btn-close-folder");
+	const btnMin = document.getElementById("btn-min");
+	const btnChooseDir = document.getElementById("btn-choose-dir");
+	const conatainer = document.getElementsByClassName("container");
+	const directoryContainer = document.getElementById("directory-container");
+	const searchInput = document.getElementById("search-input");
+	const btnDeleteAllFileSelected = document.getElementById(
+		"btn-delete-all-file-selected"
+	);
+	const btnConfirm = document.getElementById("btn-confirm");
+	const btnCancel = document.getElementById("btn-cancel");
 
-    btnConfirm.addEventListener("click", (event) => {
-        const checkedFiles = getCheckedFiles();
-        if (checkedFiles.length === 0) return;
-        ipcRenderer.send("delete-all-file-selected", checkedFiles);
-        removeShowClass();
-    });
-    btnCancel.addEventListener("click", (event) => {
-        removeShowClass();
-    });
+	const btnOrganize = document.getElementById("btn-organize");
 
-    const removeShowClass = () => {
-        document.querySelector(".prompt").classList.remove("show");
-    };
+	btnOrganize.addEventListener("click", (event) => {
+		ipcRenderer.send("organize-files-by-starting-char", dirPath);
+	});
 
-    btnDeleteAllFileSelected.addEventListener("click", (event) => {
-        const checkedFiles = getCheckedFiles();
+	btnConfirm.addEventListener("click", (event) => {
+		const checkedFiles = getCheckedFiles();
+		if (checkedFiles.length === 0) return;
+		ipcRenderer.send("delete-all-file-selected", checkedFiles);
+		removeShowClass();
+	});
+	btnCancel.addEventListener("click", (event) => {
+		removeShowClass();
+	});
 
-        if (checkedFiles.length === 0) return;
-        document.querySelector(".prompt").classList.add("show");
-    });
+	const removeShowClass = () => {
+		document.querySelector(".prompt").classList.remove("show");
+	};
 
-    btnCloseFolder.addEventListener("click", (event) => {
-        conatainer[0].classList.remove("selected");
-        document.getElementById("directory-container").innerHTML = "";
-        directoryData = null;
-    });
+	btnDeleteAllFileSelected.addEventListener("click", (event) => {
+		const checkedFiles = getCheckedFiles();
 
-    btnChooseDir.addEventListener("click", (event) => {
-        ipcRenderer.send("open-folder-dialog");
-    });
+		if (checkedFiles.length === 0) return;
+		document.querySelector(".prompt").classList.add("show");
+	});
 
-    ipcRenderer.on("dir-not-exists", (event) => {
-        console.log("dir not exists");
-    });
+	btnCloseFolder.addEventListener("click", (event) => {
+		conatainer[0].classList.remove("selected");
+		document.getElementById("directory-container").innerHTML = "";
+		directoryData = null;
+	});
 
-    ipcRenderer.on("selected-dir", (event, result) => {
-        dirPath = result.path;
-        delete result.path;
+	btnChooseDir.addEventListener("click", (event) => {
+		ipcRenderer.send("open-folder-dialog");
+	});
 
-        if (result) {
-            document.getElementById(
-                "selected-dir"
-            ).innerHTML = `Dir: ${dirPath}`;
+	ipcRenderer.on("dir-not-exists", (event) => {
+		console.log("dir not exists");
+	});
 
-            conatainer[0].classList.add("selected");
+	ipcRenderer.on("selected-dir", (event, result) => {
+		dirPath = result.path;
+		delete result.path;
 
-            directoryContainer.innerHTML = "";
+		if (result) {
+			document.getElementById("selected-dir").innerHTML = `Dir: ${dirPath}`;
 
-            directoryData = result;
-            createDirectoryStructure(directoryContainer, directoryData);
-            setEvents();
-        }
-    });
+			conatainer[0].classList.add("selected");
 
-    ipcRenderer.on("dir-is-not-empty", (event) => {
-        console.log("Dir is Not Empty");
-    });
+			directoryContainer.innerHTML = "";
 
-    btnClose.addEventListener("click", (event) => {
-        ipcRenderer.send("close-me");
-    });
+			directoryData = result;
+			createDirectoryStructure(directoryContainer, directoryData);
+			setEvents();
+		}
+	});
 
-    btnMin.addEventListener("click", (event) => {
-        ipcRenderer.send("min-me");
-    });
+	ipcRenderer.on("dir-is-not-empty", (event) => {
+		console.log("Dir is Not Empty");
+	});
 
-    searchInput.addEventListener("keyup", async (event) => {
-        const searchValue = event.target.value;
-        if (!directoryData) return;
-        if (searchValue === "") {
-            ipcRenderer.send("read-dir", dirPath);
-            directoryContainer.classList.remove("onsearch");
-            return;
-        }
-        const files = searchFiles(directoryData, searchValue);
-        let dirData = await buildDirectoryStructure(files);
-        console.log("dirDate", dirData);
-        directoryContainer.innerHTML = "";
-        directoryContainer.classList.add("onsearch");
-        createDirectoryStructure(directoryContainer, dirData);
-        setEvents();
-    });
+	btnClose.addEventListener("click", (event) => {
+		ipcRenderer.send("close-me");
+	});
 
-    function createDirectoryStructure(container, data, path = "") {
-        const ul = document.createElement("ul");
+	btnMin.addEventListener("click", (event) => {
+		ipcRenderer.send("min-me");
+	});
 
-        for (const key in data) {
-            const li = document.createElement("li");
-            const span = document.createElement("span");
-            const i = document.createElement("i");
-            const checkInput = document.createElement("input");
-            const pathInput = document.createElement("input");
+	searchInput.addEventListener("keyup", async (event) => {
+		const searchValue = event.target.value;
+		if (!directoryData) return;
+		if (searchValue === "") {
+			ipcRenderer.send("read-dir", dirPath);
+			directoryContainer.classList.remove("onsearch");
+			return;
+		}
+		const files = searchFiles(directoryData, searchValue);
+		let dirData = await buildDirectoryStructure(files);
+		console.log("dirDate", dirData);
+		directoryContainer.innerHTML = "";
+		directoryContainer.classList.add("onsearch");
+		createDirectoryStructure(directoryContainer, dirData);
+		setEvents();
+	});
 
-            pathInput.setAttribute("type", "hidden");
-            pathInput.setAttribute("name", "path");
-            pathInput.setAttribute("value", `${path}`);
+	function createDirectoryStructure(container, data, path = "") {
+		const ul = document.createElement("ul");
 
-            checkInput.setAttribute("type", "checkbox");
-            checkInput.setAttribute("name", "check");
+		for (const key in data) {
+			const li = document.createElement("li");
+			const span = document.createElement("span");
+			const i = document.createElement("i");
+			const checkInput = document.createElement("input");
+			const pathInput = document.createElement("input");
 
-            checkInput.setAttribute("id", key);
-            checkInput.setAttribute("value", key);
+			pathInput.setAttribute("type", "hidden");
+			pathInput.setAttribute("name", "path");
+			pathInput.setAttribute("value", `${path}`);
 
-            i.classList.add("fa-light");
-            i.classList.add("fa-file-alt");
-            span.textContent = key;
+			checkInput.setAttribute("type", "checkbox");
+			checkInput.setAttribute("name", "check");
 
-            li.appendChild(pathInput);
-            li.appendChild(checkInput);
-            li.appendChild(i);
-            li.appendChild(span);
-            if (data[key]) {
-                i.classList.add("fa-folder");
-                span.classList.add("dropdown");
-                li.appendChild(
-                    createDirectoryStructure(
-                        document.createElement("div"),
-                        data[key],
-                        `${path}/${key}`
-                    )
-                );
-            }
-            ul.appendChild(li);
-        }
+			checkInput.setAttribute("id", key);
+			checkInput.setAttribute("value", key);
 
-        container.appendChild(ul);
-        return ul;
-    }
+			i.classList.add("fa-light");
+			i.classList.add("fa-file-alt");
+			span.textContent = key;
 
-    function getFilePath(input) {
-        const path = input.parentNode.children[0].value;
-        const fileName = input.value;
-        return `${path}/${fileName}`;
-    }
+			li.appendChild(pathInput);
+			li.appendChild(checkInput);
+			li.appendChild(i);
+			li.appendChild(span);
+			if (data[key]) {
+				i.classList.add("fa-folder");
+				span.classList.add("dropdown");
+				li.appendChild(
+					createDirectoryStructure(
+						document.createElement("div"),
+						data[key],
+						`${path}/${key}`
+					)
+				);
+			}
+			ul.appendChild(li);
+		}
 
-    function getCheckedFiles() {
-        const checkedFiles = [];
-        const checked = document.querySelectorAll(
-            'input[name="check"]:checked'
-        );
+		container.appendChild(ul);
+		return ul;
+	}
 
-        checked.forEach((item) => {
-            checkedFiles.push(getFilePath(item));
-        });
+	function getFilePath(input) {
+		const path = input.parentNode.children[0].value;
+		const fileName = input.value;
+		return `${path}/${fileName}`;
+	}
 
-        return checkedFiles;
-    }
+	function getCheckedFiles() {
+		const checkedFiles = [];
+		const checked = document.querySelectorAll('input[name="check"]:checked');
 
-    function searchFiles(directory, fileName, currentPath = []) {
-        let foundPaths = [];
+		checked.forEach((item) => {
+			checkedFiles.push(getFilePath(item));
+		});
 
-        for (const key in directory) {
-            const newPath = [...currentPath, key];
+		return checkedFiles;
+	}
 
-            if (key.toLocaleLowerCase().includes(fileName.toLocaleLowerCase()))
-                foundPaths.push(newPath.join("/"));
+	function searchFiles(directory, fileName, currentPath = []) {
+		let foundPaths = [];
 
-            if (directory[key] && typeof directory[key] === "object") {
-                const result = searchFiles(directory[key], fileName, newPath);
-                foundPaths = foundPaths.concat(result);
-            }
-        }
-        console.log("foundPaths", foundPaths);
-        return foundPaths;
-    }
+		for (const key in directory) {
+			const newPath = [...currentPath, key];
 
-    async function buildDirectoryStructure(filePaths) {
-        const directory = {};
+			if (key.toLocaleLowerCase().includes(fileName.toLocaleLowerCase()))
+				foundPaths.push(newPath.join("/"));
 
-        await Promise.all(
-            filePaths.map(async (filePath) => {
-                const pathComponents = filePath.split("/");
-                let currentLevel = directory;
-                await Promise.all(
-                    pathComponents.map(async (component, index) => {
-                        console.log("Component: ", component);
-                        if (!currentLevel[component]) {
-                            if (index === pathComponents.length - 1) {
-                                if (
-                                    await ipcRenderer.invoke(
-                                        "check-is-file",
-                                        filePath
-                                    )
-                                ) {
-                                    currentLevel[component] = null;
-                                }
-                            } else {
-                                currentLevel[component] = {};
-                            }
-                        }
-                        currentLevel = currentLevel[component];
-                    })
-                );
-            })
-        );
-        console.log("res: ", directory);
-        return directory;
-    }
+			if (directory[key] && typeof directory[key] === "object") {
+				const result = searchFiles(directory[key], fileName, newPath);
+				foundPaths = foundPaths.concat(result);
+			}
+		}
+		console.log("foundPaths", foundPaths);
+		return foundPaths;
+	}
 
-    function setEvents() {
-        document.querySelectorAll(".dropdown").forEach((item) => {
-            item.addEventListener("click", (event) => {
-                const ul = event.target.nextSibling;
-                ul.style.display =
-                    ul.style.display === "none" || ul.style.display === ""
-                        ? "block"
-                        : "none";
-            });
-        });
-    }
+	async function buildDirectoryStructure(filePaths) {
+		const directory = {};
+
+		await Promise.all(
+			filePaths.map(async (filePath) => {
+				const pathComponents = filePath.split("/");
+				let currentLevel = directory;
+				await Promise.all(
+					pathComponents.map(async (component, index) => {
+						console.log("Component: ", component);
+						if (!currentLevel[component]) {
+							if (index === pathComponents.length - 1) {
+								if (await ipcRenderer.invoke("check-is-file", filePath)) {
+									currentLevel[component] = null;
+								}
+							} else {
+								currentLevel[component] = {};
+							}
+						}
+						currentLevel = currentLevel[component];
+					})
+				);
+			})
+		);
+		console.log("res: ", directory);
+		return directory;
+	}
+
+	function setEvents() {
+		document.querySelectorAll(".dropdown").forEach((item) => {
+			item.addEventListener("click", (event) => {
+				const ul = event.target.nextSibling;
+				ul.style.display =
+					ul.style.display === "none" || ul.style.display === ""
+						? "block"
+						: "none";
+			});
+		});
+	}
 });
