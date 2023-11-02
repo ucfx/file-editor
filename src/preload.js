@@ -18,7 +18,11 @@ window.addEventListener("DOMContentLoaded", () => {
         "btn-get-dublicated-files"
     );
     const btnInputDuplicate = document.getElementById("input-check-dublicate");
+    const btnOrganize = document.getElementById("btn-organize");
 
+    btnOrganize.addEventListener("click", (event) => {
+        ipcRenderer.send("organize-files-by-starting-char", dirPath);
+    });
     btnConfirm.addEventListener("click", (event) => {
         const checkedFiles = getCheckedFiles();
         if (checkedFiles.length === 0) return;
