@@ -163,7 +163,58 @@ function organizeFilesByStartingChar(event, directoryPath) {
     });
 }
 
-function undoOrganizeFilesByStartingChar(event, directoryPath) {}
+function undoOrganizeFilesByStartingChar(event, directoryPath) {
+    if (
+        !fs.existsSync(directoryPath) ||
+        !fs.lstatSync(directoryPath).isDirectory()
+    ) {
+        console.log(`Directory "${directoryPath}" does not exist.`);
+        return;
+    }
+
+    let dirToDelete = [];
+
+    function reset(dirPath) {
+        const files = fs.readdirSync(dirPath);
+        for (const file of files) {
+            const filePath = path.join(dirPath, file);
+            const isFile = fs.lstatSync(filePath).isFile();
+
+            if (isFile) {
+                const fileName = path.basename(filePath);
+                const newDirectory = path.join(dirPath, "..");
+
+                console.log("newDirectory", newDirectory);
+                const originalFilePath = path.join(newDirectory, fileName);
+
+                if (fs.existsSync(originalFilePath)) {
+                    console.log(
+                        `File ${fileName} already exists in ${newDirectory}`
+                    );
+                    continue;
+                }
+
+                console.log(`Moved ${fileName} to ${dirPath}`);
+                dirToDelete.push(dirPath);
+                fs.renameSync(filePath, originalFilePath);
+            } else if (fs.lstatSync(filePath).isDirectory()) {
+                reset(filePath);
+            }
+        }
+    }
+
+    reset(directoryPath);
+    dirToDelete = [...new Set(dirToDelete)];
+    dirToDelete.forEach((dir) => {
+        fs.rmdirSync(dir);
+        console.log(`Deleted ${dir}`);
+    });
+
+    event.sender.send("selected-dir", {
+        path: directoryPath,
+        ...readDir(directoryPath),
+    });
+}
 
 function organizeFilesByExtension(event, directoryPath) {
     if (
@@ -201,4 +252,55 @@ function organizeFilesByExtension(event, directoryPath) {
     });
 }
 
-function undoOrganizeFilesByExtension(event, directoryPath) {}
+function undoOrganizeFilesByExtension(event, directoryPath) {
+    if (
+        !fs.existsSync(directoryPath) ||
+        !fs.lstatSync(directoryPath).isDirectory()
+    ) {
+        console.log(`Directory "${directoryPath}" does not exist.`);
+        return;
+    }
+    let dirToDelete = [];
+
+    function reset(dirPath) {
+        const files = fs.readdirSync(dirPath);
+        for (const file of files) {
+            const filePath = path.join(dirPath, file);
+            const isFile = fs.lstatSync(filePath).isFile();
+            const extension = path.extname(file).toLowerCase();
+
+            if (isFile && extension !== "") {
+                const fileName = path.basename(filePath);
+                const newDirectory = path.join(dirPath, "..");
+
+                console.log("newDirectory", newDirectory);
+                const originalFilePath = path.join(newDirectory, fileName);
+
+                if (fs.existsSync(originalFilePath)) {
+                    console.log(
+                        `File ${fileName} already exists in ${newDirectory}`
+                    );
+                    continue;
+                }
+
+                console.log(`Moved ${fileName} to ${dirPath}`);
+                dirToDelete.push(dirPath);
+                fs.renameSync(filePath, originalFilePath);
+            } else if (fs.lstatSync(filePath).isDirectory()) {
+                reset(filePath);
+            }
+        }
+    }
+
+    reset(directoryPath);
+    dirToDelete = [...new Set(dirToDelete)];
+    dirToDelete.forEach((dir) => {
+        fs.rmdirSync(dir);
+        console.log(`Deleted ${dir}`);
+    });
+
+    event.sender.send("selected-dir", {
+        path: directoryPath,
+        ...readDir(directoryPath),
+    });
+}

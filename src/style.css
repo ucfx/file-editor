@@ -326,3 +326,9 @@ input[type="checkbox"] {
         }
     }
 }
+
+.bottom label.btn.disabled {
+    pointer-events: none;
+    background: #292b38;
+    border-color: #292b38;
+}

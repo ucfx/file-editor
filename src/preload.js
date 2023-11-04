@@ -17,6 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const btnDublicatedFiles = document.getElementById(
         "btn-get-dublicated-files"
     );
+    const checkboxInputs = document.querySelectorAll("input[type=checkbox]");
     const btnInputDuplicate = document.getElementById("input-check-dublicate");
     const btnOrganize = document.getElementById("btn-organize-filename");
     const btnExtension = document.getElementById("btn-organize-extension");
@@ -340,6 +341,23 @@ window.addEventListener("DOMContentLoaded", () => {
 
         return { ...dublicatedFiles };
     };
+
+    checkboxInputs.forEach((item) => {
+        item.addEventListener("change", (event) => {
+            console.log(item);
+            checkboxInputs.forEach((i) => {
+                if (i !== event.target) {
+                    if (item.checked) {
+                        i.parentNode.classList.add("disabled");
+                    } else {
+                        i.parentNode.classList.remove("disabled");
+                    }
+                } else {
+                    i.parentNode.classList.remove("disabled");
+                }
+            });
+        });
+    });
 
     function setDisplayBlock() {
         document.querySelectorAll("ul").forEach((ul) => {
